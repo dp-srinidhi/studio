@@ -45,8 +45,10 @@ export function InteractiveMap() {
     });
 
     return () => {
-      map.remove();
-      mapRef.current = null;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
     };
   }, []);
 
@@ -55,7 +57,7 @@ export function InteractiveMap() {
       <Card className="h-full flex items-center justify-center">
         <CardContent className="text-center p-6">
           <p className="text-muted-foreground">Map API Key is missing.</p>
-          <p className="text-sm text-muted-foreground">Please add the required API Key to your .env file.</p>
+          <p className="text-sm text-muted-foreground">Please add NEXT_PUBLIC_TOMTOM_API_KEY to your .env file.</p>
         </CardContent>
       </Card>
     );

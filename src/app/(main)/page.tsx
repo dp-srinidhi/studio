@@ -1,5 +1,5 @@
 import { StatsCards } from '@/components/dashboard/stats-cards';
-import { SummaryChart } from '@/components/dashboard/summary-chart';
+import { ZoneCards } from '@/components/dashboard/zone-cards';
 import { InteractiveMap } from '@/components/dashboard/interactive-map';
 
 export default function DashboardPage() {
@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
         <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
           <div className="lg:col-span-3">
-            <SummaryChart />
+            <ZoneCards />
           </div>
           <div className="lg:col-span-2 h-[450px] lg:h-auto">
             <InteractiveMap />

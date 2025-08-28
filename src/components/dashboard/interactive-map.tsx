@@ -1,42 +1,37 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
+import tt from '@tomtom-international/web-sdk-maps';
 import { reports } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PotholeIcon } from '@/components/icons';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-
-const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
 
 export function InteractiveMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<google.maps.Map | null>(null);
+  const mapRef = useRef<tt.Map | null>(null);
   const position = { lat: 13.06, lng: 80.25 }; // Approx center of Chennai
 
   useEffect(() => {
-    if (!API_KEY || !mapContainer.current || mapRef.current || !window.google) return;
+    if (!API_KEY || !mapContainer.current || mapRef.current) return;
 
-    const map = new window.google.maps.Map(mapContainer.current, {
-      center: position,
-      zoom: 11,
-      mapId: 'DEMO_MAP_ID',
+    const map = tt.map({
+      key: API_KEY,
+      container: mapContainer.current,
+      center: [position.lng, position.lat],
+      zoom: 10,
     });
 
     reports.forEach(report => {
-      const potholeIcon = document.createElement('div');
-      potholeIcon.innerHTML = renderToStaticMarkup(
+      const markerElement = document.createElement('div');
+      markerElement.innerHTML = renderToStaticMarkup(
         <PotholeIcon className="h-8 w-8 text-destructive" />
       );
 
-      const marker = new google.maps.marker.AdvancedMarkerElement({
-        map,
-        position: report.location,
-        title: report.address,
-        content: potholeIcon,
-      });
-
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
+      new tt.Marker({ element: markerElement })
+        .setLngLat([report.location.lng, report.location.lat])
+        .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
           <div class="p-2 max-w-xs">
             <h4 class="font-bold text-sm text-foreground">${report.address}</h4>
             <p class="text-xs text-muted-foreground">${report.description}</p>
@@ -44,15 +39,16 @@ export function InteractiveMap() {
               Severity: <span class="font-semibold text-foreground">${report.severity}</span>
             </p>
           </div>
-        `,
-      });
-
-      marker.addListener('gmp-click', () => {
-        infoWindow.open(map, marker);
-      });
+        `))
+        .addTo(map);
     });
 
     mapRef.current = map;
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    }
 
   }, []);
 
@@ -62,7 +58,7 @@ export function InteractiveMap() {
         <CardContent className="text-center p-6">
           <p className="text-muted-foreground">Map API Key is missing.</p>
           <p className="text-sm text-muted-foreground">
-            Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your .env file.
+            Please add NEXT_PUBLIC_TOMTOM_API_KEY to your .env file.
           </p>
         </CardContent>
       </Card>

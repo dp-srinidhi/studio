@@ -14,7 +14,7 @@ export default function ReportPotholePage() {
                 <CardHeader>
                     <CardTitle>New Pothole Report</CardTitle>
                     <CardDescription>
-                        Your contribution makes Chennai's roads safer for everyone.
+                        Please provide the location, severity, and a photo of the pothole.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

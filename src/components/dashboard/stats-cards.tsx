@@ -1,24 +1,12 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircleDotDashed, Wrench, CheckCircle2, AlertCircle } from 'lucide-react';
-import { getReportsRealtime } from '@/lib/firestore';
-import type { PotholeReport } from '@/lib/types';
+import { reports } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function StatsCards() {
-  const [reports, setReports] = useState<PotholeReport[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = getReportsRealtime((fetchedReports) => {
-      setReports(fetchedReports);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
+  const loading = false; // Data is now static
   const totalReports = reports.length;
   const completedReports = reports.filter(r => r.status === 'Completed').length;
   const inProgressReports = reports.filter(r => r.status === 'In Progress').length;

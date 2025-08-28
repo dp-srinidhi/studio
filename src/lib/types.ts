@@ -12,24 +12,10 @@ export type PotholeReport = {
   zone: string;
   status: PotholeStatus;
   severity: PotholeSeverity;
-  reportedAt: Date; // Will be stored as a Firestore Timestamp
-  filledAt?: Date; // Optional, will be stored as a Firestore Timestamp
+  reportedAt: Date;
+  filledAt?: Date;
   imageUrl?: string;
-  userId: string;
-  droneCoordinates?: {
-    lat: number;
-    lng: number;
-  }
 };
-
-export type Rover = {
-    id: string;
-    liveLocation: {
-        lat: number;
-        lng: number;
-    };
-    lastUpdate: Date; // Will be stored as a Firestore Timestamp
-}
 
 export type Zone = {
   name: string;

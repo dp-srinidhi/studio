@@ -10,8 +10,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { PotholeStatus, PotholeSeverity, PotholeReport } from '@/lib/types';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
-import { getReportsRealtime } from '@/lib/firestore';
+import { reports } from '@/lib/data';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const getStatusBadgeVariant = (status: PotholeStatus) => {
@@ -37,17 +36,7 @@ const getSeverityBadgeVariant = (severity: PotholeSeverity) => {
   };
 
 export function ReportsTable() {
-  const [reports, setReports] = useState<PotholeReport[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = getReportsRealtime((fetchedReports) => {
-      setReports(fetchedReports);
-      setLoading(false);
-    });
-    // Unsubscribe from the listener when the component unmounts
-    return () => unsubscribe();
-  }, []);
+  const loading = false; // Data is now static
 
   return (
     <div className="rounded-lg border">

@@ -72,7 +72,7 @@ export function InteractiveMap() {
   }
 
   return (
-    <Card className="h-full flex flex-col flex-1">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Live Pothole Map</CardTitle>
       </CardHeader>

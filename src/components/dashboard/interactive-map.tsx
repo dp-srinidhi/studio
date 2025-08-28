@@ -3,8 +3,6 @@ import { useRef, useEffect } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
 import { reports } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PotholeIcon } from '@/components/icons';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 const API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
 
@@ -24,12 +22,7 @@ export function InteractiveMap() {
     });
 
     reports.forEach(report => {
-      const markerElement = document.createElement('div');
-      markerElement.innerHTML = renderToStaticMarkup(
-        <PotholeIcon className="h-8 w-8 text-destructive" />
-      );
-
-      new tt.Marker({ element: markerElement })
+      new tt.Marker({ color: '#228B22' }) // Forest Green color
         .setLngLat([report.location.lng, report.location.lat])
         .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
           <div class="p-2 max-w-xs">

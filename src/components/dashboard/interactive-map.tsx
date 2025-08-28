@@ -4,16 +4,13 @@ import {
   APIProvider,
   Map,
   AdvancedMarker,
-  Pin,
   InfoWindow,
 } from '@vis.gl/react-google-maps';
-import { reports, zones } from '@/lib/data';
+import { reports } from '@/lib/data';
 import type { PotholeReport } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PotholeIcon } from '../icons';
 import { Badge } from '../ui/badge';
-import { Switch } from '../ui/switch';
-import { Label } from '../ui/label';
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const CHENNAI_CENTER = { lat: 13.0827, lng: 80.2707 };
@@ -53,32 +50,13 @@ function PotholeMarker({ report }: { report: PotholeReport }) {
   );
 }
 
-function MapLayers() {
-  const [showTraffic, setShowTraffic] = useState(false);
-  const [showWeather, setShowWeather] = useState(false);
-
-  return (
-    <div className="absolute top-2 right-2 bg-card p-3 rounded-lg shadow-md border space-y-3">
-        <div className="flex items-center space-x-2">
-            <Switch id="traffic" checked={showTraffic} onCheckedChange={setShowTraffic} />
-            <Label htmlFor="traffic">Show Traffic</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-            <Switch id="weather" checked={showWeather} onCheckedChange={setShowWeather} />
-            <Label htmlFor="weather">Show Weather</Label>
-        </div>
-        {/* Placeholder for future zone toggle */}
-    </div>
-  );
-}
-
 export function InteractiveMap() {
   if (!API_KEY) {
     return (
       <Card className="h-full flex items-center justify-center">
         <CardContent className="text-center">
           <p className="text-muted-foreground">Google Maps API Key is missing.</p>
-          <p className="text-sm text-muted-foreground">Please add it to your .env.local file.</p>
+          <p className="text-sm text-muted-foreground">Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your .env file.</p>
         </CardContent>
       </Card>
     );
@@ -103,7 +81,6 @@ export function InteractiveMap() {
                     <PotholeMarker key={report.id} report={report} />
                     ))}
                 </Map>
-                <MapLayers />
             </div>
         </APIProvider>
       </CardContent>

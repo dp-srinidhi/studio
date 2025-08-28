@@ -1,18 +1,36 @@
 'use client';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
-import { reports } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getReports } from '@/lib/firestore';
+import type { PotholeReport } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
 
 export function InteractiveMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<tt.Map | null>(null);
+  const [reports, setReports] = useState<PotholeReport[]>([]);
+  const [loading, setLoading] = useState(true);
   const position = { lat: 13.06, lng: 80.25 }; // Approx center of Chennai
 
   useEffect(() => {
-    if (!API_KEY || !mapContainer.current || mapRef.current) return;
+    const fetchReports = async () => {
+      try {
+        const fetchedReports = await getReports();
+        setReports(fetchedReports);
+      } catch (error) {
+        console.error("Failed to fetch reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReports();
+  }, []);
+
+  useEffect(() => {
+    if (loading || !API_KEY || !mapContainer.current || mapRef.current || reports.length === 0) return;
 
     const map = tt.map({
       key: API_KEY,
@@ -43,7 +61,7 @@ export function InteractiveMap() {
       mapRef.current = null;
     }
 
-  }, []);
+  }, [loading, reports, position.lat, position.lng]);
 
   if (!API_KEY) {
     return (
@@ -64,7 +82,11 @@ export function InteractiveMap() {
         <CardTitle>Live Pothole Map</CardTitle>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] p-0 rounded-b-lg overflow-hidden">
-        <div ref={mapContainer} className="map-container h-full w-full" />
+        {loading ? (
+          <Skeleton className="h-full w-full" />
+        ) : (
+          <div ref={mapContainer} className="map-container h-full w-full" />
+        )}
       </CardContent>
     </Card>
   );

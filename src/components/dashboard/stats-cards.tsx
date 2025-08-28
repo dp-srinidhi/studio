@@ -1,22 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircleDotDashed, Wrench, CheckCircle2, AlertCircle } from 'lucide-react';
-import { reports } from '@/lib/data';
-import type { PotholeStatus } from '@/lib/types';
+import { getReports } from '@/lib/firestore';
+import type { PotholeReport } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const totalReports = reports.length;
-const completedReports = reports.filter(r => r.status === 'Completed').length;
-const inProgressReports = reports.filter(r => r.status === 'In Progress').length;
-const highSeverityReports = reports.filter(r => r.severity === 'High').length;
 
-const statItems = [
-    { title: 'Total Reports', value: totalReports, icon: CircleDotDashed },
-    { title: 'Completed', value: completedReports, icon: CheckCircle2, color: 'text-primary' },
-    { title: 'In Progress', value: inProgressReports, icon: Wrench },
-    { title: 'High Urgency', value: highSeverityReports, icon: AlertCircle, color: 'text-destructive' },
-]
+export async function StatsCards() {
+  const reports = await getReports();
 
-export function StatsCards() {
+  const totalReports = reports.length;
+  const completedReports = reports.filter(r => r.status === 'Completed').length;
+  const inProgressReports = reports.filter(r => r.status === 'In Progress').length;
+  const highSeverityReports = reports.filter(r => r.severity === 'High').length;
+
+  const statItems = [
+      { title: 'Total Reports', value: totalReports, icon: CircleDotDashed },
+      { title: 'Completed', value: completedReports, icon: CheckCircle2, color: 'text-primary' },
+      { title: 'In Progress', value: inProgressReports, icon: Wrench },
+      { title: 'High Urgency', value: highSeverityReports, icon: AlertCircle, color: 'text-destructive' },
+  ]
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {statItems.map((item) => (

@@ -8,9 +8,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { reports } from '@/lib/data';
-import type { PotholeStatus, PotholeSeverity } from '@/lib/types';
+import type { PotholeStatus, PotholeSeverity, PotholeReport } from '@/lib/types';
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { getReports } from '@/lib/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getStatusBadgeVariant = (status: PotholeStatus) => {
   switch (status) {
@@ -35,6 +37,23 @@ const getSeverityBadgeVariant = (severity: PotholeSeverity) => {
   };
 
 export function ReportsTable() {
+  const [reports, setReports] = useState<PotholeReport[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const fetchedReports = await getReports();
+        setReports(fetchedReports);
+      } catch (error) {
+        console.error("Failed to fetch reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReports();
+  }, []);
+
   return (
     <div className="rounded-lg border">
       <Table>
@@ -49,20 +68,33 @@ export function ReportsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {reports.map((report) => (
-            <TableRow key={report.id}>
-              <TableCell className="font-medium">{report.id}</TableCell>
-              <TableCell>{report.address}</TableCell>
-              <TableCell>{report.zone}</TableCell>
-              <TableCell>{format(report.reportedAt, 'PP')}</TableCell>
-              <TableCell>
-                <Badge variant={getSeverityBadgeVariant(report.severity)}>{report.severity}</Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant={getStatusBadgeVariant(report.status)}>{report.status}</Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+          {loading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <TableRow key={i}>
+                <TableCell><Skeleton className="h-4 w-[50px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[60px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+              </TableRow>
+            ))
+          ) : (
+            reports.map((report) => (
+              <TableRow key={report.id}>
+                <TableCell className="font-medium">{report.id}</TableCell>
+                <TableCell>{report.address}</TableCell>
+                <TableCell>{report.zone}</TableCell>
+                <TableCell>{format(report.reportedAt, 'PP')}</TableCell>
+                <TableCell>
+                  <Badge variant={getSeverityBadgeVariant(report.severity)}>{report.severity}</Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={getStatusBadgeVariant(report.status)}>{report.status}</Badge>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

@@ -19,7 +19,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-3">
             <ZoneCards />
           </div>
-          <div className="lg:col-span-2 h-[450px] lg:h-auto">
+          <div className="lg:col-span-2 h-[450px] lg:h-auto min-h-[450px]">
             <MapLoader />
           </div>
         </div>

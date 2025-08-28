@@ -72,11 +72,11 @@ export function InteractiveMap() {
   }
 
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Live Pothole Map</CardTitle>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] p-0 rounded-b-lg overflow-hidden">
+      <CardContent className="flex-1 p-0 rounded-b-lg overflow-hidden">
         {loading && <Skeleton className="h-full w-full" />}
         <div ref={mapContainer} className="map-container h-full w-full" style={{ display: loading ? 'none' : 'block' }} />
       </CardContent>

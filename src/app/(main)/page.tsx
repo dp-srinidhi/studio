@@ -1,6 +1,6 @@
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { ZoneCards } from '@/components/dashboard/zone-cards';
-import { InteractiveMap } from '@/components/dashboard/interactive-map';
+import { MapLoader } from '@/components/dashboard/map-loader';
 
 export default function DashboardPage() {
   return (
@@ -20,7 +20,7 @@ export default function DashboardPage() {
             <ZoneCards />
           </div>
           <div className="lg:col-span-2 h-[450px] lg:h-auto">
-            <InteractiveMap />
+            <MapLoader />
           </div>
         </div>
       </main>

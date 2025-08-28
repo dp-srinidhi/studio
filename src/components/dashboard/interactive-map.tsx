@@ -29,22 +29,24 @@ export function InteractiveMap() {
             zoom: 10,
         });
         mapRef.current = map;
-        setLoading(false);
 
-        reports.forEach(report => {
-            new tt.Marker({ color: '#228B22' })
-            .setLngLat([report.location.lng, report.location.lat])
-            .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
-                <div class="p-2 max-w-xs">
-                <h4 class="font-bold text-sm text-foreground">${report.address}</h4>
-                <p class="text-xs text-muted-foreground">${report.description}</p>
-                <p class="text-xs mt-1 text-muted-foreground">
-                    Severity: <span class="font-semibold text-foreground">${report.severity}</span>
-                </p>
-                </div>
-            `))
-            .addTo(map);
-        });
+        map.on('load', () => {
+          setLoading(false);
+          reports.forEach(report => {
+              new tt.Marker({ color: '#228B22' }) // ForestGreen color for the pin
+              .setLngLat([report.location.lng, report.location.lat])
+              .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
+                  <div class="p-2 max-w-xs">
+                  <h4 class="font-bold text-sm text-foreground">${report.address}</h4>
+                  <p class="text-xs text-muted-foreground">${report.description}</p>
+                  <p class="text-xs mt-1 text-muted-foreground">
+                      Severity: <span class="font-semibold text-foreground">${report.severity}</span>
+                  </p>
+                  </div>
+              `))
+              .addTo(map);
+          });
+        })
     }
 
     return () => {
@@ -53,7 +55,8 @@ export function InteractiveMap() {
             mapRef.current = null;
         }
     };
-  }, [position.lat, position.lng]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!API_KEY) {
     return (
@@ -74,11 +77,8 @@ export function InteractiveMap() {
         <CardTitle>Live Pothole Map</CardTitle>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] p-0 rounded-b-lg overflow-hidden">
-        {loading ? (
-          <Skeleton className="h-full w-full" />
-        ) : (
-          <div ref={mapContainer} className="map-container h-full w-full" />
-        )}
+        {loading && <Skeleton className="h-full w-full" />}
+        <div ref={mapContainer} className="map-container h-full w-full" style={{ display: loading ? 'none' : 'block' }} />
       </CardContent>
     </Card>
   );

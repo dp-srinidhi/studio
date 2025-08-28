@@ -2,7 +2,7 @@
 import { useRef, useEffect, useState } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getReports } from '@/lib/firestore';
+import { getReportsRealtime } from '@/lib/firestore';
 import type { PotholeReport } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -11,57 +11,62 @@ const API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
 export function InteractiveMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<tt.Map | null>(null);
-  const [reports, setReports] = useState<PotholeReport[]>([]);
+  const markersRef = useRef<tt.Marker[]>([]);
   const [loading, setLoading] = useState(true);
   const position = { lat: 13.06, lng: 80.25 }; // Approx center of Chennai
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const fetchedReports = await getReports();
-        setReports(fetchedReports);
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReports();
-  }, []);
-
-  useEffect(() => {
-    if (loading || !API_KEY || !mapContainer.current || mapRef.current || reports.length === 0) return;
-
-    const map = tt.map({
-      key: API_KEY,
-      container: mapContainer.current,
-      center: [position.lng, position.lat],
-      zoom: 10,
-    });
-
-    reports.forEach(report => {
-      new tt.Marker({ color: '#228B22' }) // Forest Green color
-        .setLngLat([report.location.lng, report.location.lat])
-        .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
-          <div class="p-2 max-w-xs">
-            <h4 class="font-bold text-sm text-foreground">${report.address}</h4>
-            <p class="text-xs text-muted-foreground">${report.description}</p>
-            <p class="text-xs mt-1 text-muted-foreground">
-              Severity: <span class="font-semibold text-foreground">${report.severity}</span>
-            </p>
-          </div>
-        `))
-        .addTo(map);
-    });
-
-    mapRef.current = map;
-
-    return () => {
-      map.remove();
-      mapRef.current = null;
+    if (!API_KEY) {
+      console.error("TomTom API key is missing.");
+      setLoading(false);
+      return;
     }
 
-  }, [loading, reports, position.lat, position.lng]);
+    if (mapContainer.current && !mapRef.current) {
+        const map = tt.map({
+            key: API_KEY,
+            container: mapContainer.current,
+            center: [position.lng, position.lat],
+            zoom: 10,
+        });
+        mapRef.current = map;
+    }
+
+    const unsubscribe = getReportsRealtime((reports) => {
+      setLoading(false);
+      const map = mapRef.current;
+      if (!map) return;
+
+      // Clear existing markers
+      markersRef.current.forEach(marker => marker.remove());
+      markersRef.current = [];
+
+      // Add new markers
+      reports.forEach(report => {
+        const marker = new tt.Marker({ color: '#228B22' }) // Forest Green color
+          .setLngLat([report.location.lng, report.location.lat])
+          .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
+            <div class="p-2 max-w-xs">
+              <h4 class="font-bold text-sm text-foreground">${report.address}</h4>
+              <p class="text-xs text-muted-foreground">${report.description}</p>
+              <p class="text-xs mt-1 text-muted-foreground">
+                Severity: <span class="font-semibold text-foreground">${report.severity}</span>
+              </p>
+            </div>
+          `))
+          .addTo(map);
+        markersRef.current.push(marker);
+      });
+    });
+
+    return () => {
+        unsubscribe();
+        if (mapRef.current) {
+            mapRef.current.remove();
+            mapRef.current = null;
+        }
+    };
+  }, [position.lat, position.lng]);
 
   if (!API_KEY) {
     return (

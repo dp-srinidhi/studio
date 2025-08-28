@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, Timestamp, Unsubscribe } from 'firebase/firestore';
 import type { PotholeReport } from './types';
 
 // Converts a Firestore document with Timestamps to a PotholeReport object with Dates
@@ -30,4 +30,16 @@ export async function getReports(): Promise<PotholeReport[]> {
         console.error("Error fetching reports from Firestore: ", error);
         return [];
     }
+}
+
+export function getReportsRealtime(callback: (reports: PotholeReport[]) => void): Unsubscribe {
+    const reportsCollection = collection(db, "potholeReports");
+    const unsubscribe = onSnapshot(reportsCollection, (querySnapshot) => {
+        const reports = querySnapshot.docs.map(fromFirestore);
+        callback(reports);
+    }, (error) => {
+        console.error("Error fetching real-time reports from Firestore: ", error);
+        callback([]);
+    });
+    return unsubscribe;
 }

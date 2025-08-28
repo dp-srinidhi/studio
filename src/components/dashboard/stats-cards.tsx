@@ -1,12 +1,23 @@
+'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircleDotDashed, Wrench, CheckCircle2, AlertCircle } from 'lucide-react';
-import { getReports } from '@/lib/firestore';
+import { getReportsRealtime } from '@/lib/firestore';
 import type { PotholeReport } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
+export function StatsCards() {
+  const [reports, setReports] = useState<PotholeReport[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export async function StatsCards() {
-  const reports = await getReports();
+  useEffect(() => {
+    const unsubscribe = getReportsRealtime((fetchedReports) => {
+      setReports(fetchedReports);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const totalReports = reports.length;
   const completedReports = reports.filter(r => r.status === 'Completed').length;
@@ -19,6 +30,25 @@ export async function StatsCards() {
       { title: 'In Progress', value: inProgressReports, icon: Wrench },
       { title: 'High Urgency', value: highSeverityReports, icon: AlertCircle, color: 'text-destructive' },
   ]
+
+  if (loading) {
+    return (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+                <Card key={i}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Skeleton className="h-4 w-[100px]" />
+                        <Skeleton className="h-4 w-4" />
+                    </CardHeader>
+                    <CardContent>
+                        <Skeleton className="h-8 w-[40px] mb-2" />
+                        <Skeleton className="h-3 w-[120px]" />
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
+    )
+  }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

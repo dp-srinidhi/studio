@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import type { PotholeStatus, PotholeSeverity, PotholeReport } from '@/lib/types';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { getReports } from '@/lib/firestore';
+import { getReportsRealtime } from '@/lib/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const getStatusBadgeVariant = (status: PotholeStatus) => {
@@ -41,17 +41,12 @@ export function ReportsTable() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const fetchedReports = await getReports();
-        setReports(fetchedReports);
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReports();
+    const unsubscribe = getReportsRealtime((fetchedReports) => {
+      setReports(fetchedReports);
+      setLoading(false);
+    });
+    // Unsubscribe from the listener when the component unmounts
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -82,7 +77,7 @@ export function ReportsTable() {
           ) : (
             reports.map((report) => (
               <TableRow key={report.id}>
-                <TableCell className="font-medium">{report.id}</TableCell>
+                <TableCell className="font-medium">{report.id.substring(0, 6)}...</TableCell>
                 <TableCell>{report.address}</TableCell>
                 <TableCell>{report.zone}</TableCell>
                 <TableCell>{format(report.reportedAt, 'PP')}</TableCell>

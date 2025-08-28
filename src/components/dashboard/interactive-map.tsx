@@ -1,63 +1,53 @@
 'use client';
-import { useEffect, useRef } from 'react';
-import type { PotholeReport } from '@/lib/types';
+import { useState, useMemo } from 'react';
+import {
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  InfoWindow,
+} from '@vis.gl/react-google-maps';
 import { reports } from '@/lib/data';
+import type { PotholeReport } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
-declare var tomtom: any;
+function PotholeMarker({ report }: { report: PotholeReport }) {
+  const [open, setOpen] = useState(false);
+  const position = useMemo(() => ({ lat: report.location.lat, lng: report.location.lng }), [report]);
+
+  return (
+    <>
+      <AdvancedMarker
+        position={position}
+        onClick={() => setOpen(true)}
+      />
+      {open && (
+        <InfoWindow position={position} onCloseClick={() => setOpen(false)}>
+          <div className="p-2 max-w-xs">
+            <h4 className="font-bold text-sm text-foreground">{report.address}</h4>
+            <p className="text-xs text-muted-foreground">{report.description}</p>
+            <p className="text-xs mt-1 text-muted-foreground">
+              Severity: <span className="font-semibold text-foreground">{report.severity}</span>
+            </p>
+          </div>
+        </InfoWindow>
+      )}
+    </>
+  );
+}
 
 export function InteractiveMap() {
-  const mapElement = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (!API_KEY || !mapElement.current || typeof tomtom === 'undefined') {
-      return;
-    }
-
-    if (mapRef.current) return; // a map is already initialized
-
-    const map = tomtom.map({
-      key: API_KEY,
-      container: mapElement.current,
-      center: [80.25, 13.06], // Approx center of Chennai
-      zoom: 10,
-    });
-    
-    mapRef.current = map;
-
-    // Add markers for each pothole report
-    reports.forEach((report: PotholeReport) => {
-      const popup = new tomtom.Popup({ offset: [0, -30] }).setHTML(`
-        <div class="p-2">
-          <h4 class="font-bold text-sm">${report.address}</h4>
-          <p class="text-xs">${report.description}</p>
-          <p class="text-xs mt-1">Severity: <span class="font-semibold">${report.severity}</span></p>
-        </div>
-      `);
-
-      new tomtom.Marker()
-        .setLngLat([report.location.lng, report.location.lat])
-        .setPopup(popup)
-        .addTo(map);
-    });
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-    };
-  }, []);
+  const position = { lat: 13.06, lng: 80.25 }; // Approx center of Chennai
 
   if (!API_KEY) {
     return (
       <Card className="h-full flex items-center justify-center">
         <CardContent className="text-center p-6">
           <p className="text-muted-foreground">Map API Key is missing.</p>
-          <p className="text-sm text-muted-foreground">Please add NEXT_PUBLIC_TOMTOM_API_KEY to your .env file.</p>
+          <p className="text-sm text-muted-foreground">
+            Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your .env file.
+          </p>
         </CardContent>
       </Card>
     );
@@ -69,7 +59,19 @@ export function InteractiveMap() {
         <CardTitle>Live Pothole Map</CardTitle>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] p-0 rounded-b-lg overflow-hidden">
-        <div ref={mapElement} className="w-full h-full" />
+        <APIProvider apiKey={API_KEY}>
+          <Map
+            defaultCenter={position}
+            defaultZoom={10}
+            mapId="chennai_road_watch_map"
+            gestureHandling={'greedy'}
+            disableDefaultUI={true}
+          >
+            {reports.map((report) => (
+              <PotholeMarker key={report.id} report={report} />
+            ))}
+          </Map>
+        </APIProvider>
       </CardContent>
     </Card>
   );

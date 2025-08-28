@@ -9,6 +9,7 @@ import {
 import { reports } from '@/lib/data';
 import type { PotholeReport } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PotholeIcon } from '@/components/icons';
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -21,7 +22,9 @@ function PotholeMarker({ report }: { report: PotholeReport }) {
       <AdvancedMarker
         position={position}
         onClick={() => setOpen(true)}
-      />
+      >
+        <PotholeIcon className="h-8 w-8 text-destructive" />
+      </AdvancedMarker>
       {open && (
         <InfoWindow position={position} onCloseClick={() => setOpen(false)}>
           <div className="p-2 max-w-xs">

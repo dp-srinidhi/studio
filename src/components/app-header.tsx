@@ -23,7 +23,7 @@ export function AppHeader() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="rounded-full">
             <Avatar>
-              <AvatarImage src="https://picsum.photos/50/50" alt="User" data-ai-hint="person face" />
+              <AvatarImage src="https://storage.googleapis.com/stedi-studio-assets/pothole-rover.png" alt="User" />
               <AvatarFallback>
                 <CircleUser />
               </AvatarFallback>

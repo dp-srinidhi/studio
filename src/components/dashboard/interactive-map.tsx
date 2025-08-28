@@ -1,10 +1,11 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   APIProvider,
   Map,
   AdvancedMarker,
   InfoWindow,
+  useMap,
 } from '@vis.gl/react-google-maps';
 import { reports } from '@/lib/data';
 import type { PotholeReport } from '@/lib/types';
@@ -50,11 +51,24 @@ function PotholeMarker({ report }: { report: PotholeReport }) {
   );
 }
 
+function TrafficComponent() {
+    const map = useMap();
+    useEffect(() => {
+      if (!map) return;
+      const trafficLayer = new google.maps.TrafficLayer();
+      trafficLayer.setMap(map);
+      return () => {
+        trafficLayer.setMap(null);
+      };
+    }, [map]);
+    return null;
+  }
+
 export function InteractiveMap() {
   if (!API_KEY) {
     return (
       <Card className="h-full flex items-center justify-center">
-        <CardContent className="text-center">
+        <CardContent className="text-center p-6">
           <p className="text-muted-foreground">Google Maps API Key is missing.</p>
           <p className="text-sm text-muted-foreground">Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your .env file.</p>
         </CardContent>
@@ -77,6 +91,7 @@ export function InteractiveMap() {
                     gestureHandling={'greedy'}
                     disableDefaultUI={true}
                 >
+                    <TrafficComponent />
                     {reports.map((report) => (
                     <PotholeMarker key={report.id} report={report} />
                     ))}

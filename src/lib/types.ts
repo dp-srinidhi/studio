@@ -25,3 +25,16 @@ export type Zone = {
     filled: number;
   }
 };
+
+export type WeatherData = {
+  weather: {
+    main: string;
+    description: string;
+    icon: string;
+  }[];
+  main: {
+    temp: number;
+    feels_like: number;
+    humidity: number;
+  };
+};

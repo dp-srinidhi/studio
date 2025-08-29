@@ -1,3 +1,4 @@
+
 'use client';
 import { useRef, useEffect, useState } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
@@ -36,12 +37,13 @@ export function InteractiveMap() {
           // Add zone circles
           zones.forEach(zone => {
             const el = document.createElement('div');
-            el.style.backgroundColor = zone.color;
-            el.style.opacity = '0.3';
+            el.style.backgroundColor = 'transparent'; // No fill
+            el.style.opacity = '0.5';
             el.style.width = '100px';
             el.style.height = '100px';
             el.style.borderRadius = '50%';
-            el.style.border = `2px solid ${zone.color}`;
+            el.style.border = `3px solid ${zone.color}`; // Colored border only
+            el.style.boxSizing = 'border-box';
 
             new tt.Marker({ element: el, anchor: 'center' })
               .setLngLat([zone.center.lng, zone.center.lat])

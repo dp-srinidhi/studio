@@ -23,11 +23,11 @@ function getWeatherIcon(weather: string) {
   }
 }
 
-function getTrafficColor(speed: number, freeFlowSpeed: number) {
+function getTrafficStyling(speed: number, freeFlowSpeed: number) {
     const ratio = speed / freeFlowSpeed;
-    if (ratio > 0.8) return 'text-primary'; // Green
-    if (ratio > 0.5) return 'text-yellow-500'; // Yellow
-    return 'text-destructive'; // Red
+    if (ratio > 0.8) return { color: 'text-primary', label: 'Low Traffic' };
+    if (ratio > 0.5) return { color: 'text-yellow-500', label: 'Moderate Traffic' };
+    return { color: 'text-destructive', label: 'High Traffic' };
 }
 
 function ZoneWeather({ lat, lon }: { lat: number; lon: number }) {
@@ -93,12 +93,13 @@ function ZoneTraffic({ lat, lon }: { lat: number, lon: number}) {
     }
 
     const { currentSpeed, freeFlowSpeed } = traffic.flowSegmentData;
+    const { color, label } = getTrafficStyling(currentSpeed, freeFlowSpeed);
 
     return (
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <TrafficCone className={`h-4 w-4 ${getTrafficColor(currentSpeed, freeFlowSpeed)}`} />
-            <span className={getTrafficColor(currentSpeed, freeFlowSpeed)}>
-                {Math.round(currentSpeed)} km/h
+            <TrafficCone className={`h-4 w-4 ${color}`} />
+            <span className={color}>
+                {label}
             </span>
         </div>
     )

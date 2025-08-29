@@ -19,6 +19,7 @@ export type PotholeReport = {
 
 export type Zone = {
   name: string;
+  wards: string;
   center: { lat: number, lng: number };
   potholes: {
     reported: number;

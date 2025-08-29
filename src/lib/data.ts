@@ -2,21 +2,21 @@ import type { PotholeReport, Zone } from '@/lib/types';
 import { subDays } from 'date-fns';
 
 export const zones: Zone[] = [
-  { name: 'Teynampet', center: { lat: 13.047, lng: 80.252 }, potholes: { reported: 12, filled: 8 }, color: '#FF6347' },
-  { name: 'Adyar', center: { lat: 13.004, lng: 80.254 }, potholes: { reported: 8, filled: 5 }, color: '#4682B4' },
-  { name: 'Anna Nagar', center: { lat: 13.085, lng: 80.210 }, potholes: { reported: 15, filled: 10 }, color: '#32CD32' },
-  { name: 'Tondiarpet', center: { lat: 13.125, lng: 80.297 }, potholes: { reported: 5, filled: 2 }, color: '#FFD700' },
-  { name: 'Royapuram', center: { lat: 13.116, lng: 80.299 }, potholes: { reported: 7, filled: 6 }, color: '#6A5ACD' },
-  { name: 'Thiru-Vi-Ka Nagar', center: { lat: 13.115, lng: 80.239 }, potholes: { reported: 9, filled: 4 }, color: '#8A2BE2' },
-  { name: 'Ambattur', center: { lat: 13.114, lng: 80.155 }, potholes: { reported: 18, filled: 11 }, color: '#D2691E' },
-  { name: 'Valasaravakkam', center: { lat: 13.050, lng: 80.174 }, potholes: { reported: 6, filled: 3 }, color: '#FF4500' },
-  { name: 'Alandur', center: { lat: 12.997, lng: 80.201 }, potholes: { reported: 11, filled: 9 }, color: '#2E8B57' },
-  { name: 'Perungudi', center: { lat: 12.964, lng: 80.245 }, potholes: { reported: 14, filled: 7 }, color: '#4169E1' },
-  { name: 'Kolathur', center: { lat: 13.11, lng: 80.22 }, potholes: { reported: 10, filled: 5 }, color: '#DB7093' },
-  { name: 'Villivakkam', center: { lat: 13.10, lng: 80.20 }, potholes: { reported: 12, filled: 9 }, color: '#00CED1' },
-  { name: 'Chepauk-Thiruvallikeni', center: { lat: 13.06, lng: 80.28 }, potholes: { reported: 8, filled: 7 }, color: '#FFC0CB' },
-  { name: 'T. Nagar', center: { lat: 13.04, lng: 80.23 }, potholes: { reported: 20, filled: 15 }, color: '#7FFF00' },
-  { name: 'Virugambakkam', center: { lat: 13.05, lng: 80.19 }, potholes: { reported: 9, filled: 6 }, color: '#BDB76B' },
+  { name: 'Thiruvottiyur', wards: '1-14', center: { lat: 13.16, lng: 80.30 }, potholes: { reported: 5, filled: 2 }, color: '#FF6347' },
+  { name: 'Manali', wards: '15-21', center: { lat: 13.17, lng: 80.26 }, potholes: { reported: 4, filled: 1 }, color: '#4682B4' },
+  { name: 'Madhavaram', wards: '22-33', center: { lat: 13.14, lng: 80.23 }, potholes: { reported: 9, filled: 5 }, color: '#32CD32' },
+  { name: 'Tondiarpet', wards: '34-48', center: { lat: 13.125, lng: 80.297 }, potholes: { reported: 7, filled: 3 }, color: '#FFD700' },
+  { name: 'Royapuram', wards: '49-63', center: { lat: 13.116, lng: 80.299 }, potholes: { reported: 8, filled: 6 }, color: '#6A5ACD' },
+  { name: 'Thiru-Vi-Ka Nagar', wards: '64-78', center: { lat: 13.115, lng: 80.239 }, potholes: { reported: 11, filled: 7 }, color: '#8A2BE2' },
+  { name: 'Ambattur', wards: '79-93', center: { lat: 13.114, lng: 80.155 }, potholes: { reported: 18, filled: 11 }, color: '#D2691E' },
+  { name: 'Anna Nagar', wards: '94-108', center: { lat: 13.085, lng: 80.210 }, potholes: { reported: 15, filled: 10 }, color: '#FF4500' },
+  { name: 'Teynampet', wards: '109-126', center: { lat: 13.047, lng: 80.252 }, potholes: { reported: 12, filled: 8 }, color: '#2E8B57' },
+  { name: 'Kodambakkam', wards: '127-142', center: { lat: 13.047, lng: 80.220 }, potholes: { reported: 14, filled: 9 }, color: '#4169E1' },
+  { name: 'Valasaravakkam', wards: '143-155', center: { lat: 13.050, lng: 80.174 }, potholes: { reported: 6, filled: 3 }, color: '#DB7093' },
+  { name: 'Alandur', wards: '156-167', center: { lat: 12.997, lng: 80.201 }, potholes: { reported: 11, filled: 9 }, color: '#00CED1' },
+  { name: 'Adyar', wards: '170-182', center: { lat: 13.004, lng: 80.254 }, potholes: { reported: 8, filled: 5 }, color: '#FFC0CB' },
+  { name: 'Perungudi', wards: '168, 169, 183-191', center: { lat: 12.964, lng: 80.245 }, potholes: { reported: 14, filled: 7 }, color: '#7FFF00' },
+  { name: 'Sholinganallur', wards: '192-200', center: { lat: 12.88, lng: 80.22 }, potholes: { reported: 10, filled: 4 }, color: '#BDB76B' },
 ];
 
 export const reports: PotholeReport[] = [

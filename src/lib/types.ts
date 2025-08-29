@@ -23,7 +23,8 @@ export type Zone = {
   potholes: {
     reported: number;
     filled: number;
-  }
+  },
+  color: string;
 };
 
 export type WeatherData = {

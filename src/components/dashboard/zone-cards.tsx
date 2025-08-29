@@ -117,7 +117,10 @@ export function ZoneCards() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {zones.map(zone => (
                         <div key={zone.name} className="flex flex-col p-4 border rounded-lg bg-card text-card-foreground shadow-sm space-y-3">
-                            <h3 className="text-sm font-semibold text-center">{zone.name}</h3>
+                            <div className="flex items-center justify-center gap-2">
+                                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: zone.color }}></span>
+                                <h3 className="text-sm font-semibold text-center">{zone.name}</h3>
+                            </div>
                             <div className="flex items-center justify-center gap-2">
                                 <Wrench className="h-5 w-5 text-primary" />
                                 <span className="text-2xl font-bold">{zone.potholes.filled}</span>

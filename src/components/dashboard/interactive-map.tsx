@@ -2,7 +2,7 @@
 import { useRef, useEffect, useState } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { reports } from '@/lib/data';
+import { reports, zones } from '@/lib/data';
 import type { PotholeReport } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -32,6 +32,23 @@ export function InteractiveMap() {
 
         map.on('load', () => {
           setLoading(false);
+
+          // Add zone circles
+          zones.forEach(zone => {
+            const el = document.createElement('div');
+            el.style.backgroundColor = zone.color;
+            el.style.opacity = '0.3';
+            el.style.width = '100px';
+            el.style.height = '100px';
+            el.style.borderRadius = '50%';
+            el.style.border = `2px solid ${zone.color}`;
+
+            new tt.Marker({ element: el, anchor: 'center' })
+              .setLngLat([zone.center.lng, zone.center.lat])
+              .addTo(map);
+          });
+
+          // Add report markers
           reports.forEach(report => {
               new tt.Marker({ color: '#228B22' }) // ForestGreen color for the pin
               .setLngLat([report.location.lng, report.location.lat])

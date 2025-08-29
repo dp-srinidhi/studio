@@ -6,6 +6,7 @@ import {
   ListChecks,
   LogOut,
   PlusCircle,
+  Locate,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -23,6 +24,7 @@ const menuItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/report', label: 'Report Pothole', icon: PlusCircle },
   { href: '/reports', label: 'My Reports', icon: ListChecks },
+  { href: '/rover-tracking', label: 'Rover Tracking', icon: Locate },
 ];
 
 export function AppSidebar() {

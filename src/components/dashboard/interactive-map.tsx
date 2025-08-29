@@ -1,4 +1,3 @@
-
 'use client';
 import { useRef, useEffect, useState } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
@@ -34,58 +33,58 @@ export function InteractiveMap() {
         map.on('load', () => {
           setLoading(false);
 
-          map.addSource('zones-source', {
-            'type': 'geojson',
-            'data': {
-              'type': 'FeatureCollection',
-              'features': zones.map(zone => {
-                // Create a simple square polygon around the center
-                const size = 0.02; // Adjust size of the polygon
-                const center = zone.center;
-                const coordinates = [[
-                  [center.lng - size, center.lat + size],
-                  [center.lng + size, center.lat + size],
-                  [center.lng + size, center.lat - size],
-                  [center.lng - size, center.lat - size],
-                  [center.lng - size, center.lat + size]
-                ]];
-                return {
-                  'type': 'Feature',
-                  'geometry': {
-                    'type': 'Polygon',
-                    'coordinates': coordinates
-                  },
-                  'properties': {
-                    'color': zone.color,
-                    'name': zone.name
-                  }
-                };
-              })
-            }
-          });
+          zones.forEach((zone, index) => {
+            const size = 0.02; // Adjust size of the polygon
+            const center = zone.center;
+            const coordinates = [[
+              [center.lng - size, center.lat + size],
+              [center.lng + size, center.lat + size],
+              [center.lng + size, center.lat - size],
+              [center.lng - size, center.lat - size],
+              [center.lng - size, center.lat + size]
+            ]];
+            
+            const sourceId = `zone-source-${index}`;
+            const fillLayerId = `zone-layer-fill-${index}`;
+            const outlineLayerId = `zone-layer-outline-${index}`;
 
-          map.addLayer({
-            'id': 'zones-layer-fill',
-            'type': 'fill',
-            'source': 'zones-source',
-            'layout': {},
-            'paint': {
-              'fill-color': ['get', 'color'],
-              'fill-opacity': 0.2
-            }
-          });
+            map.addSource(sourceId, {
+              'type': 'geojson',
+              'data': {
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'Polygon',
+                  'coordinates': coordinates
+                },
+                'properties': {
+                  'color': zone.color,
+                  'name': zone.name
+                }
+              }
+            });
 
-          map.addLayer({
-            'id': 'zones-layer-outline',
-            'type': 'line',
-            'source': 'zones-source',
-            'layout': {},
-            'paint': {
-              'line-color': ['get', 'color'],
-              'line-width': 2
-            }
+            map.addLayer({
+              'id': fillLayerId,
+              'type': 'fill',
+              'source': sourceId,
+              'layout': {},
+              'paint': {
+                'fill-color': zone.color,
+                'fill-opacity': 0.2
+              }
+            });
+  
+            map.addLayer({
+              'id': outlineLayerId,
+              'type': 'line',
+              'source': sourceId,
+              'layout': {},
+              'paint': {
+                'line-color': zone.color,
+                'line-width': 2
+              }
+            });
           });
-
 
           // Add report markers
           reports.forEach(report => {

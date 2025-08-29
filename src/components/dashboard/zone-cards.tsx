@@ -8,7 +8,7 @@ import { fetchWeatherForZone } from '@/lib/weather';
 import { fetchTrafficForZone } from '@/lib/traffic';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function getWeatherIcon(weather: string) {
+export function getWeatherIcon(weather: string) {
   switch (weather) {
     case 'Clear':
       return <Sun className="h-4 w-4" />;
@@ -30,7 +30,7 @@ function getTrafficStyling(speed: number, freeFlowSpeed: number) {
     return { color: 'text-destructive', label: 'High Traffic' };
 }
 
-function ZoneWeather({ lat, lon }: { lat: number; lon: number }) {
+export function ZoneWeather({ lat, lon }: { lat: number; lon: number }) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,7 +66,7 @@ function ZoneWeather({ lat, lon }: { lat: number; lon: number }) {
   );
 }
 
-function ZoneTraffic({ lat, lon }: { lat: number, lon: number}) {
+export function ZoneTraffic({ lat, lon }: { lat: number, lon: number}) {
     const [traffic, setTraffic] = useState<TrafficData | null>(null);
     const [loading, setLoading] = useState(true);
 

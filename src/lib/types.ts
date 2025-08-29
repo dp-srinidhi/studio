@@ -38,3 +38,15 @@ export type WeatherData = {
     humidity: number;
   };
 };
+
+export type TrafficData = {
+  flowSegmentData: {
+    frc: string;
+    currentSpeed: number;
+    freeFlowSpeed: number;
+    currentTravelTime: number;
+    freeFlowTravelTime: number;
+    confidence: number;
+    roadClosure: boolean;
+  };
+};

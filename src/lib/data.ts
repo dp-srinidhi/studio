@@ -12,6 +12,11 @@ export const zones: Zone[] = [
   { name: 'Valasaravakkam', center: { lat: 13.050, lng: 80.174 }, potholes: { reported: 6, filled: 3 } },
   { name: 'Alandur', center: { lat: 12.997, lng: 80.201 }, potholes: { reported: 11, filled: 9 } },
   { name: 'Perungudi', center: { lat: 12.964, lng: 80.245 }, potholes: { reported: 14, filled: 7 } },
+  { name: 'Kolathur', center: { lat: 13.11, lng: 80.22 }, potholes: { reported: 10, filled: 5 } },
+  { name: 'Villivakkam', center: { lat: 13.10, lng: 80.20 }, potholes: { reported: 12, filled: 9 } },
+  { name: 'Chepauk-Thiruvallikeni', center: { lat: 13.06, lng: 80.28 }, potholes: { reported: 8, filled: 7 } },
+  { name: 'T. Nagar', center: { lat: 13.04, lng: 80.23 }, potholes: { reported: 20, filled: 15 } },
+  { name: 'Virugambakkam', center: { lat: 13.05, lng: 80.19 }, potholes: { reported: 9, filled: 6 } },
 ];
 
 export const reports: PotholeReport[] = [

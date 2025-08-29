@@ -28,6 +28,15 @@ export type Zone = {
   color: string;
 };
 
+export type Ward = {
+  id: number;
+  name: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+};
+
 export type WeatherData = {
   weather: {
     main: string;

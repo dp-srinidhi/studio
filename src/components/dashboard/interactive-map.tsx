@@ -2,8 +2,8 @@
 import { useRef, useEffect, useState } from 'react';
 import tt from '@tomtom-international/web-sdk-maps';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { reports, zones } from '@/lib/data';
-import type { PotholeReport } from '@/lib/types';
+import { reports } from '@/lib/data';
+import { wards } from '@/lib/wards';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
@@ -33,57 +33,19 @@ export function InteractiveMap() {
         map.on('load', () => {
           setLoading(false);
 
-          zones.forEach((zone, index) => {
-            const size = 0.02; // Adjust size of the polygon
-            const center = zone.center;
-            const coordinates = [[
-              [center.lng - size, center.lat + size],
-              [center.lng + size, center.lat + size],
-              [center.lng + size, center.lat - size],
-              [center.lng - size, center.lat - size],
-              [center.lng - size, center.lat + size]
-            ]];
-            
-            const sourceId = `zone-source-${index}`;
-            const fillLayerId = `zone-layer-fill-${index}`;
-            const outlineLayerId = `zone-layer-outline-${index}`;
+          // Add ward markers
+          wards.forEach(ward => {
+            const el = document.createElement('div');
+            el.className = 'w-2 h-2 bg-blue-500 rounded-full border-2 border-white';
 
-            map.addSource(sourceId, {
-              'type': 'geojson',
-              'data': {
-                'type': 'Feature',
-                'geometry': {
-                  'type': 'Polygon',
-                  'coordinates': coordinates
-                },
-                'properties': {
-                  'color': zone.color,
-                  'name': zone.name
-                }
-              }
-            });
-
-            map.addLayer({
-              'id': fillLayerId,
-              'type': 'fill',
-              'source': sourceId,
-              'layout': {},
-              'paint': {
-                'fill-color': zone.color,
-                'fill-opacity': 0.2
-              }
-            });
-  
-            map.addLayer({
-              'id': outlineLayerId,
-              'type': 'line',
-              'source': sourceId,
-              'layout': {},
-              'paint': {
-                'line-color': zone.color,
-                'line-width': 2
-              }
-            });
+            new tt.Marker({ element: el })
+              .setLngLat([ward.location.lng, ward.location.lat])
+              .setPopup(new tt.Popup({ offset: 25 }).setHTML(`
+                <div class="p-1">
+                  <h4 class="font-bold text-xs text-foreground">Ward ${ward.id}: ${ward.name}</h4>
+                </div>
+              `))
+              .addTo(map);
           });
 
           // Add report markers
@@ -129,7 +91,7 @@ export function InteractiveMap() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>Live Pothole Map</CardTitle>
+        <CardTitle>Live Pothole & Ward Map</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-0 rounded-b-lg overflow-hidden">
         {loading && <Skeleton className="h-full w-full" />}

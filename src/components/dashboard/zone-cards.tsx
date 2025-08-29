@@ -96,7 +96,7 @@ export function ZoneTraffic({ lat, lon }: { lat: number, lon: number}) {
     const { color, label } = getTrafficStyling(currentSpeed, freeFlowSpeed);
 
     return (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <TrafficCone className={`h-4 w-4 ${color}`} />
             <span className={color}>
                 {label}

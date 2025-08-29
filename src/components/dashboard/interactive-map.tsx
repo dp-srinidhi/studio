@@ -34,21 +34,58 @@ export function InteractiveMap() {
         map.on('load', () => {
           setLoading(false);
 
-          // Add zone circles
-          zones.forEach(zone => {
-            const el = document.createElement('div');
-            el.style.backgroundColor = 'transparent'; // No fill
-            el.style.opacity = '0.5';
-            el.style.width = '100px';
-            el.style.height = '100px';
-            el.style.borderRadius = '50%';
-            el.style.border = `3px solid ${zone.color}`; // Colored border only
-            el.style.boxSizing = 'border-box';
-
-            new tt.Marker({ element: el, anchor: 'center' })
-              .setLngLat([zone.center.lng, zone.center.lat])
-              .addTo(map);
+          map.addSource('zones-source', {
+            'type': 'geojson',
+            'data': {
+              'type': 'FeatureCollection',
+              'features': zones.map(zone => {
+                // Create a simple square polygon around the center
+                const size = 0.02; // Adjust size of the polygon
+                const center = zone.center;
+                const coordinates = [[
+                  [center.lng - size, center.lat + size],
+                  [center.lng + size, center.lat + size],
+                  [center.lng + size, center.lat - size],
+                  [center.lng - size, center.lat - size],
+                  [center.lng - size, center.lat + size]
+                ]];
+                return {
+                  'type': 'Feature',
+                  'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': coordinates
+                  },
+                  'properties': {
+                    'color': zone.color,
+                    'name': zone.name
+                  }
+                };
+              })
+            }
           });
+
+          map.addLayer({
+            'id': 'zones-layer-fill',
+            'type': 'fill',
+            'source': 'zones-source',
+            'layout': {},
+            'paint': {
+              'fill-color': ['get', 'color'],
+              'fill-opacity': 0.2
+            }
+          });
+
+          map.addLayer({
+            'id': 'zones-layer-outline',
+            'type': 'line',
+            'source': 'zones-source',
+            'layout': {},
+            'paint': {
+              'line-color': ['get', 'color'],
+              'line-width': 2
+            }
+          });
+
 
           // Add report markers
           reports.forEach(report => {

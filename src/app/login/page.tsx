@@ -9,16 +9,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { LogoIcon } from '@/components/icons';
-import { useAuth } from '@/context/auth-context';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuth();
-
-  const handleLogin = (role: 'operator' | 'public') => {
-    login(role);
-    router.push('/');
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -34,10 +27,10 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            <Button onClick={() => handleLogin('operator')} className="w-full">
+            <Button onClick={() => router.push('/login/operator')} className="w-full">
               Login as Operator
             </Button>
-            <Button onClick={() => handleLogin('public')} variant="outline" className="w-full">
+            <Button onClick={() => router.push('/login/public')} variant="outline" className="w-full">
               Login as Public User
             </Button>
           </div>

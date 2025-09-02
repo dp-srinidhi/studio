@@ -21,13 +21,16 @@ import { LogoIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/auth-context';
 
-const baseMenuItems = [
+const publicMenuItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/report', label: 'Report Pothole', icon: PlusCircle },
-  { href: '/reports', label: 'My Reports', icon: ListChecks },
 ];
 
-const operatorMenuItem = { href: '/rover-tracking', label: 'Rover Tracking', icon: Locate };
+const operatorMenuItems = [
+  ...publicMenuItems,
+  { href: '/reports', label: 'My Reports', icon: ListChecks },
+  { href: '/rover-tracking', label: 'Rover Tracking', icon: Locate },
+];
 
 
 export function AppSidebar() {
@@ -40,7 +43,7 @@ export function AppSidebar() {
     router.push('/login');
   }
 
-  const menuItems = role === 'operator' ? [...baseMenuItems, operatorMenuItem] : baseMenuItems;
+  const menuItems = role === 'operator' ? operatorMenuItems : publicMenuItems;
 
   return (
     <Sidebar

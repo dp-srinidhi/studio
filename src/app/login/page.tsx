@@ -27,7 +27,7 @@ export default function LoginPage() {
             <div className="flex justify-center items-center mb-4">
                 <LogoIcon className="h-10 w-10 text-primary" />
             </div>
-          <CardTitle className="text-2xl">Login to Chennai Road Watch</CardTitle>
+          <CardTitle className="text-2xl">Login to Road Rever</CardTitle>
           <CardDescription>
             Please select your role to login.
           </CardDescription>

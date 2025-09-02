@@ -27,7 +27,7 @@ export function AppHeader() {
     <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-card px-4 sm:h-16 sm:px-6">
       <SidebarTrigger className="md:hidden" />
       <div className="flex-1">
-        <h1 className="text-lg font-semibold">Chennai Road Watch</h1>
+        <h1 className="text-lg font-semibold">Road Rever</h1>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -6,7 +6,7 @@ import Script from 'next/script';
 import { AuthProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
-  title: 'Chennai Road Watch',
+  title: 'Road Rever',
   description: 'A civic reporting web application for managing road infrastructure issues in Chennai.',
 };
 

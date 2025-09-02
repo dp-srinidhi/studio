@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   ListChecks,
@@ -19,16 +19,28 @@ import {
 } from '@/components/ui/sidebar';
 import { LogoIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/auth-context';
 
-const menuItems = [
+const baseMenuItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/report', label: 'Report Pothole', icon: PlusCircle },
   { href: '/reports', label: 'My Reports', icon: ListChecks },
-  { href: '/rover-tracking', label: 'Rover Tracking', icon: Locate },
 ];
+
+const operatorMenuItem = { href: '/rover-tracking', label: 'Rover Tracking', icon: Locate };
+
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { role, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  }
+
+  const menuItems = role === 'operator' ? [...baseMenuItems, operatorMenuItem] : baseMenuItems;
 
   return (
     <Sidebar
@@ -73,14 +85,12 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              asChild
+              onClick={handleLogout}
               className="justify-start text-sidebar-foreground/80"
               tooltip={{ children: 'Logout' }}
             >
-              <Link href="/login">
                 <LogOut className="h-5 w-5" />
                 <span className="truncate">Logout</span>
-              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
